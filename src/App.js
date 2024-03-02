@@ -6,16 +6,95 @@ import PostPage from "./PostPage";
 import About from "./About";
 import Missing from "./Missing";
 import Layout from "./Layout";
+import { format } from "date-fns";
 
 function App() {
     const navigate = useNavigate();
+    const [posts, setPosts] = useState([
+        {
+            id: 1,
+            title: "First post",
+            datetime: "March 01, 2024 9:37:00 PM",
+            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        },
+        {
+            id: 2,
+            title: "2nd post",
+            datetime: "March 01, 2024 9:37:00 PM",
+            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        },
+        {
+            id: 3,
+            title: "3rd post",
+            datetime: "March 01, 2024 9:37:00 PM",
+            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        },
+        {
+            id: 4,
+            title: "4th post",
+            datetime: "March 01, 2024 9:37:00 PM",
+            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        },
+    ]);
+    const [search, setSearch] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [postTitle, setPostTitle] = useState("");
+    const [postBody, setPostBody] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), "MMMM dd, yyyy pp");
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+        const allPosts = [...posts, newPost];
+
+        setPosts(allPosts);
+        setPostTitle("");
+        setPostBody("");
+        navigate("/");
+    };
+
+    const handleDelete = (id) => {
+        const postList = posts.filter((post) => post.id !== id);
+        setPosts(postList);
+        navigate("/");
+    };
+
     return (
         <Routes>
-            <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
+            <Route
+                path="/"
+                element={
+                    <Layout
+                        title="React Blog"
+                        search={search}
+                        setSearch={setSearch}
+                    />
+                }
+            >
+                <Route index element={<Home posts={posts} />} />
                 <Route path="post">
-                    <Route index element={<NewPost />} />
-                    <Route path=":id" element={<PostPage />} />
+                    <Route
+                        index
+                        element={
+                            <NewPost
+                                handleSubmit={handleSubmit}
+                                postTitle={postTitle}
+                                setPostTitle={setPostTitle}
+                                postBody={postBody}
+                                setPostBody={setPostBody}
+                            />
+                        }
+                    />
+                    <Route
+                        path=":id"
+                        element={
+                            <PostPage
+                                posts={posts}
+                                handleDelete={handleDelete}
+                            />
+                        }
+                    />
                 </Route>
                 <Route path="about" element={<About />} />
                 <Route path="*" element={<Missing />} />
