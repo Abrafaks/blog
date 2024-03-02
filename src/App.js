@@ -41,6 +41,17 @@ function App() {
     const [postTitle, setPostTitle] = useState("");
     const [postBody, setPostBody] = useState("");
 
+    useEffect(() => {
+        const filteredResults = posts.filter((post) => {
+            return (
+                post.body.toLowerCase().includes(search.toLowerCase()) ||
+                post.title.toLowerCase().includes(search.toLowerCase())
+            );
+        });
+
+        setSearchResults(filteredResults.reverse());
+    }, [posts, search]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
@@ -72,7 +83,7 @@ function App() {
                     />
                 }
             >
-                <Route index element={<Home posts={posts} />} />
+                <Route index element={<Home posts={searchResults} />} />
                 <Route path="post">
                     <Route
                         index
