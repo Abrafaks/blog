@@ -21,8 +21,7 @@ const NewPost = ({
                 />
 
                 <label htmlFor="post-body">Post:</label>
-                <input
-                    type="text"
+                <textarea
                     id="post-body"
                     required
                     value={postBody}
