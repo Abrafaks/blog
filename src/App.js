@@ -8,6 +8,7 @@ import Missing from "./Missing";
 import Layout from "./Layout";
 import { format } from "date-fns";
 import api from "./api/posts";
+import EditPost from "./EditPost";
 
 function App() {
     const navigate = useNavigate();
@@ -59,6 +60,23 @@ function App() {
         } catch (e) {}
     };
 
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), "MMMM dd, yyyy pp");
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+
+            setPosts(
+                posts.map((post) =>
+                    post.id === id ? { ...response.data } : post
+                )
+            );
+            setEditBody("");
+            setEditTitle("");
+            navigate("/");
+        } catch (e) {}
+    };
+
     const handleDelete = async (id) => {
         try {
             await api.delete(`/posts/${id}`);
@@ -104,8 +122,23 @@ function App() {
                         }
                     />
                 </Route>
+                <Route path="edit">
+                    <Route
+                        path=":id"
+                        element={
+                            <EditPost
+                                posts={posts}
+                                handleEdit={handleEdit}
+                                editTitle={editTitle}
+                                setEditTitle={setEditTitle}
+                                editBody={editBody}
+                                setEditBody={setEditBody}
+                            />
+                        }
+                    />
+                </Route>
                 <Route path="about" element={<About />} />
-                <Route path="*" element={<Missing />} />
+                <Route path="*" element={<Missing name={"Page"} />} />
             </Route>
         </Routes>
     );

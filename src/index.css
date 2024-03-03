@@ -72,8 +72,8 @@ body {
 }
 
 .search-form {
-    width: 80%;
-    padding: 1rem 0 0 0.75rem;
+    width: 100%;
+    padding: 1rem 0.75rem 0rem 0.75rem;
 }
 
 .search-form input[type="text"] {
@@ -198,11 +198,9 @@ body {
     cursor: pointer;
 }
 
-.missing h2,
 .missing p,
-.post-page h2,
-.post-page p {
-    margin-bottom: 1rem;
+.new-post p .post-page p {
+    margin-top: 1rem;
 }
 
 .post-page button {
@@ -212,8 +210,16 @@ body {
     padding: 0.5rem;
     font-size: 1rem;
     color: #fff;
-    background-color: rgb(163, 19, 19);
     cursor: pointer;
+}
+
+.delete-button {
+    background-color: rgb(163, 19, 19);
+}
+
+.edit-button {
+    background-color: dimgray;
+    margin-right: 1rem;
 }
 
 @media only screen and (min-width: 576px) {
