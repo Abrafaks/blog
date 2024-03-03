@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
+import Missing from "./Missing";
 
 const PostPage = ({ posts, handleDelete }) => {
     const { id } = useParams();
@@ -18,15 +19,7 @@ const PostPage = ({ posts, handleDelete }) => {
                     </>
                 )}
 
-                {!post && (
-                    <>
-                        <h2>Post not found</h2>
-                        <p>What a pity...</p>
-                        <p>
-                            <Link to="/">Visit Our Homepage</Link>
-                        </p>
-                    </>
-                )}
+                {!post && <Missing name={"Post"} />}
             </article>
         </main>
     );
