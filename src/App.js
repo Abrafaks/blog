@@ -7,39 +7,28 @@ import About from "./About";
 import Missing from "./Missing";
 import Layout from "./Layout";
 import { format } from "date-fns";
+import api from "./api/posts";
 
 function App() {
     const navigate = useNavigate();
-    const [posts, setPosts] = useState([
-        {
-            id: 1,
-            title: "First post",
-            datetime: "March 01, 2024 9:37:00 PM",
-            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        },
-        {
-            id: 2,
-            title: "2nd post",
-            datetime: "March 01, 2024 9:37:00 PM",
-            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        },
-        {
-            id: 3,
-            title: "3rd post",
-            datetime: "March 01, 2024 9:37:00 PM",
-            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        },
-        {
-            id: 4,
-            title: "4th post",
-            datetime: "March 01, 2024 9:37:00 PM",
-            body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        },
-    ]);
+    const [posts, setPosts] = useState([]);
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [postTitle, setPostTitle] = useState("");
     const [postBody, setPostBody] = useState("");
+    const [editTitle, setEditTitle] = useState("");
+    const [editBody, setEditBody] = useState("");
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await api.get("/posts");
+                setPosts(response.data);
+            } catch (e) {}
+        };
+
+        fetchPosts();
+    }, []);
 
     useEffect(() => {
         const filteredResults = posts.filter((post) => {
@@ -52,23 +41,31 @@ function App() {
         setSearchResults(filteredResults.reverse());
     }, [posts, search]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const id = (
+            posts.length ? parseInt(posts[posts.length - 1].id) + 1 : 1
+        ).toString();
         const datetime = format(new Date(), "MMMM dd, yyyy pp");
         const newPost = { id, title: postTitle, datetime, body: postBody };
-        const allPosts = [...posts, newPost];
+        try {
+            const response = await api.post("/posts", newPost);
+            const allPosts = [...posts, response.data];
 
-        setPosts(allPosts);
-        setPostTitle("");
-        setPostBody("");
-        navigate("/");
+            setPosts(allPosts);
+            setPostTitle("");
+            setPostBody("");
+            navigate("/");
+        } catch (e) {}
     };
 
-    const handleDelete = (id) => {
-        const postList = posts.filter((post) => post.id !== id);
-        setPosts(postList);
-        navigate("/");
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/posts/${id}`);
+            const postList = posts.filter((post) => post.id !== id);
+            setPosts(postList);
+            navigate("/");
+        } catch (e) {}
     };
 
     return (
