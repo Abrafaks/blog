@@ -1,15 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Missing from "./Missing";
+import DataContext from "./context/DataContext";
 
-const EditPost = ({
-    posts,
-    handleEdit,
-    editBody,
-    setEditBody,
-    editTitle,
-    setEditTitle,
-}) => {
+const EditPost = () => {
+    const {
+        posts,
+        handleEdit,
+        editBody,
+        setEditBody,
+        editTitle,
+        setEditTitle,
+    } = useContext(DataContext);
+
     const { id } = useParams();
     const post = posts.find((post) => post.id === id);
 
@@ -25,7 +28,10 @@ const EditPost = ({
             {editTitle && (
                 <>
                     <h2>Edit Post</h2>
-                    <form className="new-post-form" onSubmit={handleEdit}>
+                    <form
+                        className="new-post-form"
+                        onSubmit={(e) => e.preventDefault()}
+                    >
                         <label htmlFor="post-title">Title:</label>
                         <input
                             type="text"
@@ -42,7 +48,12 @@ const EditPost = ({
                             value={editBody}
                             onChange={(e) => setEditBody(e.target.value)}
                         />
-                        <button type="submit">Update Post</button>
+                        <button
+                            type="submit"
+                            onClick={() => handleEdit(post.id)}
+                        >
+                            Update Post
+                        </button>
                     </form>
                 </>
             )}
