@@ -4,10 +4,10 @@ import Header from "./Header";
 import Nav from "./Nav";
 import Footer from "./Footer";
 
-const Layout = ({ title, search, setSearch }) => {
+const Layout = ({ title, search, setSearch, width }) => {
     return (
         <div className="App">
-            <Header title={title} />
+            <Header title={title} width={width} />
             <Nav search={search} setSearch={setSearch} />
             <Outlet />
             <Footer />

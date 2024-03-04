@@ -9,6 +9,7 @@ import Layout from "./Layout";
 import { format } from "date-fns";
 import api from "./api/posts";
 import EditPost from "./EditPost";
+import { useWindowSize } from "./hooks/useWindowSize";
 
 function App() {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ function App() {
     const [postBody, setPostBody] = useState("");
     const [editTitle, setEditTitle] = useState("");
     const [editBody, setEditBody] = useState("");
+    const { width } = useWindowSize();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -95,6 +97,7 @@ function App() {
                         title="React Blog"
                         search={search}
                         setSearch={setSearch}
+                        width={width}
                     />
                 }
             >
