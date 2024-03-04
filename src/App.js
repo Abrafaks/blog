@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import api from "./api/posts";
 import EditPost from "./EditPost";
 import { useWindowSize } from "./hooks/useWindowSize";
+import { useAxiosFetch } from "./hooks/useAxiosFetch";
 
 function App() {
     const navigate = useNavigate();
@@ -22,16 +23,13 @@ function App() {
     const [editBody, setEditBody] = useState("");
     const { width } = useWindowSize();
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await api.get("/posts");
-                setPosts(response.data);
-            } catch (e) {}
-        };
+    const { data, fetchError, isLoading } = useAxiosFetch(
+        "http://localhost:3500/posts"
+    );
 
-        fetchPosts();
-    }, []);
+    useEffect(() => {
+        setPosts(data);
+    }, [data]);
 
     useEffect(() => {
         const filteredResults = posts.filter((post) => {
@@ -101,7 +99,16 @@ function App() {
                     />
                 }
             >
-                <Route index element={<Home posts={searchResults} />} />
+                <Route
+                    index
+                    element={
+                        <Home
+                            posts={searchResults}
+                            fetchError={fetchError}
+                            isLoading={isLoading}
+                        />
+                    }
+                />
                 <Route path="post">
                     <Route
                         index
