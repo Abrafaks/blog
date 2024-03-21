@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./Home";
-import NewPost from "./NewPost";
-import PostPage from "./PostPage";
-import About from "./About";
-import Missing from "./Missing";
-import Layout from "./Layout";
-import EditPost from "./EditPost";
+import Home from "./components/Home";
+import NewPost from "./components/NewPost";
+import PostPage from "./components/PostPage";
+import About from "./components/About";
+import Missing from "./components/Missing";
+import Layout from "./components/Layout";
+import EditPost from "./components/EditPost";
 import { useEffect } from "react";
 import { useAxiosFetch } from "./hooks/useAxiosFetch";
 import { useStoreActions } from "easy-peasy";
